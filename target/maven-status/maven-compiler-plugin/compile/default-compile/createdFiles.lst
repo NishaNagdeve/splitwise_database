@@ -1,0 +1,16 @@
+splitwisedb\Service\Sservice.class
+splitwisedb\Modal\GroupMember.class
+splitwisedb\Modal\Messsage.class
+splitwisedb\Repo\MemberRepo.class
+splitwisedb\Repo\Srepo.class
+splitwisedb\Modal\Expense.class
+splitwisedb\Service\MsgSer.class
+splitwisedb\SplitwiseApplication.class
+splitwisedb\Repo\ImageRepo.class
+splitwisedb\Modal\GroupData.class
+splitwisedb\Modal\Smodel.class
+splitwisedb\Controller\Scontroller.class
+splitwisedb\Repo\ExpenseShareRepo.class
+splitwisedb\Cors\CorsDev.class
+splitwisedb\Modal\ExpenseShare.class
+splitwisedb\Repo\ExpenseRepo.class
