@@ -1,9 +1,9 @@
-HELP.md
+# Ignore general build directories
 target/
-!.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
 
+# Ignore Eclipse and Spring Tool Suite (STS) specific files
 ### STS ###
 .apt_generated
 .classpath
@@ -13,12 +13,14 @@ target/
 .springBeans
 .sts4-cache
 
+# Ignore IntelliJ IDEA files
 ### IntelliJ IDEA ###
 .idea
 *.iws
 *.iml
 *.ipr
 
+# Ignore NetBeans specific files
 ### NetBeans ###
 /nbproject/private/
 /nbbuild/
@@ -29,7 +31,9 @@ build/
 !**/src/main/**/build/
 !**/src/test/**/build/
 
+# Ignore VS Code settings
 ### VS Code ###
 .vscode/
 
+# Ignore application.properties to avoid sensitive data in git history
 src/main/resources/application.properties
