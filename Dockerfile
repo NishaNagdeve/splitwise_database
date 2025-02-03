@@ -7,6 +7,12 @@ WORKDIR /app
 # Copy the pom.xml and the source code
 COPY . /app/
 
+# Run mvnw.cmd for Windows compatibility
+RUN ./mvnw.cmd clean package -DskipTests
+
+# Run dependency resolution
+RUN ./mvnw.cmd dependency:go-offline
+
 # Install the dependencies and build the project
 RUN mvn clean install
 
@@ -21,5 +27,3 @@ COPY --from=build /app/target/my-app.jar /app/my-app.jar
 
 # Run the application
 CMD ["java", "-jar", "my-app.jar"]
-
-RUN chmod +x ./mvnw && ./mvnw clean package -DskipTests
