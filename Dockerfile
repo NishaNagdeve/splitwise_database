@@ -7,23 +7,23 @@ WORKDIR /app
 # Copy the pom.xml and the source code
 COPY . /app/
 
-# Run mvnw.cmd for Windows compatibility
-RUN ./mvnw.cmd clean package -DskipTests
+# Make sure mvnw is executable
+RUN chmod +x mvnw
 
-# Run dependency resolution
-RUN ./mvnw.cmd dependency:go-offline
+# Run Maven with debug logging
+RUN chmod +x mvnw && ./mvnw clean package -DskipTests -X
 
-# Install the dependencies and build the project
-RUN mvn clean install
 
-# Create the final image based on the OpenJDK image
-FROM openjdk:11-jre-slim
+# Use a base image with OpenJDK 17 for running the app
+FROM openjdk:17-jdk-slim
 
-# Set the working directory
+# Set the working directory for the app
 WORKDIR /app
 
 # Copy the JAR file from the build stage
 COPY --from=build /app/target/my-app.jar /app/my-app.jar
 
 # Run the application
-CMD ["java", "-jar", "my-app.jar"]
+CMD ["java", "-jar", "/app/my-app.jar"]
+
+RUN java -version
