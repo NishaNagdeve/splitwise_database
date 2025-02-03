@@ -21,3 +21,5 @@ COPY --from=build /app/target/my-app.jar /app/my-app.jar
 
 # Run the application
 CMD ["java", "-jar", "my-app.jar"]
+
+RUN chmod +x ./mvnw && ./mvnw clean package -DskipTests
