@@ -33,5 +33,5 @@ COPY . /app
 WORKDIR /app
 RUN chmod +x mvnw
 RUN ./mvnw clean package -DskipTests
-CMD ["java", "-jar", "/app/my-app.jar"]
+CMD ["java", "-jar", "/app/splitwisedb-0.0.1-SNAPSHOT.jar"]
 
