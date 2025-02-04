@@ -8,22 +8,30 @@ WORKDIR /app
 COPY . /app/
 
 # Make sure mvnw is executable
-RUN chmod +x mvnw
+#RUN chmod +x mvnw
 
 # Run Maven with debug logging
-RUN chmod +x mvnw && ./mvnw clean package -DskipTests -X
+#RUN chmod +x mvnw && ./mvnw clean package -DskipTests -X
 
 
 # Use a base image with OpenJDK 17 for running the app
-FROM openjdk:17-jdk-slim
+#FROM openjdk:17-jdk-slim
 
 # Set the working directory for the app
-WORKDIR /app
+#WORKDIR /app
 
 # Copy the JAR file from the build stage
-COPY --from=build /app/target/my-app.jar /app/my-app.jar
+#COPY --from=build /app/target/my-app.jar /app/my-app.jar
 
 # Run the application
+#CMD ["java", "-jar", "/app/my-app.jar"]
+
+#RUN java -version
+
+FROM openjdk:17-jdk-alpine
+COPY . /app
+WORKDIR /app
+RUN chmod +x mvnw
+RUN ./mvnw clean package -DskipTests
 CMD ["java", "-jar", "/app/my-app.jar"]
 
-RUN java -version
