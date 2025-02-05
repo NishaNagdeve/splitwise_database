@@ -33,7 +33,8 @@ import splitwisedb.Service.Sservice;
 
 
 @RestController
-@CrossOrigin(origins = "http://localhost:3000") 
+//@CrossOrigin(origins = "http://localhost:3000") 
+@CrossOrigin(origins= "https://splitwise-base.onrender.com")
 public class Scontroller {
 
 	@Autowired
