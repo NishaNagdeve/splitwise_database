@@ -1,0 +1,12 @@
+@media((min-width:320px) and (max-width: 575.98px))  {
+    .navbar {
+        padding: 50px 70px; 
+      }
+      .img {
+        height: 50px; 
+        width: 80px; 
+        margin-left: 0; 
+        margin-top: 0;  
+        
+      }
+}

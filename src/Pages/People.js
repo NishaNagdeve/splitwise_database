@@ -24,6 +24,7 @@ function People() {
 
     // const img=localStorage.getItem("groupImg");
     // const name=localStorage.getItem("groupName");
+    const baseUrl="https://splitwise-database.onrender.com";
     const location=useLocation();
     const {groupName,groupImg,id,num,expenses,shares,draft}=location.state || {};
      const img=groupImg;
@@ -50,6 +51,7 @@ function People() {
     const [owed, setOwed]=useState([]);
     const [paid,setPaid]=useState([]);
     const[data,setData]=useState([]);
+    const[overallbal,setOverallbal]=useState(false);
     const [addMoney,setAddMoney]=useState([{
        user:'',
        money:0
@@ -96,6 +98,7 @@ function People() {
         setModels(false);
         setSettle(false);
         setTotal(false);
+        setOverallbal(false);
     }
     const handleshow=()=>{
         
@@ -152,7 +155,7 @@ function People() {
         setMember([...member,newmember]);
         handleClose();
        try{  
-        const res=await axios.post('http://localhost:8080/member',{
+        const res=await axios.post(`${baseUrl}/member`,{
            mainUser,
            groupId,
            user,
@@ -166,7 +169,7 @@ function People() {
         console.error(error);
       }
       try{
-        const res=await axios.post(`http://localhost:8080/id?groupId=${groupId}`);
+        const res=await axios.post(`${baseUrl}/id?groupId=${groupId}`);
         // console.log("before:",res.data);
         if((res.data)===0)
         {
@@ -185,7 +188,7 @@ function People() {
 
       try{
             
-            const res=await axios.post('http://localhost:8080/sms',{
+            const res=await axios.post(`${baseUrl}/sms`,{
                 phoneNumber:mobile,
                 message:`Hello ${user}, Welcome to Splitwise your friend ${mainUser} has added to the group called ${name}`
               },
@@ -217,7 +220,7 @@ function People() {
     {
         setModels(true);
           try {
-            const res = await axios.post(`http://localhost:8080/id?groupId=${groupId}`);
+            const res = await axios.post(`${baseUrl}/id?groupId=${groupId}`);
             setCheck(res.data); 
               } 
             catch (error) {
@@ -225,7 +228,7 @@ function People() {
             }
 
         try{
-               const res=await axios.post(`http://localhost:8080/memberName?groupId=${groupId}`);
+               const res=await axios.post(`${baseUrl}/memberName?groupId=${groupId}`);
                const data=res.data;
                if(data)
                {
@@ -286,9 +289,9 @@ function People() {
           try
           {
                setSub(null);
-               const response=await axios.post(`http://localhost:8080/id?groupId=${groupId}`);
+               const response=await axios.post(`${baseUrl}/id?groupId=${groupId}`);
 
-                const res1=await axios.post('http://localhost:8080/expense',
+                const res1=await axios.post(`${baseUrl}/expense`,
                   {
                     groupId:groupId,
                     description:desc,
@@ -342,10 +345,10 @@ function People() {
               }));
               setModels(false);
               console.log(expenseShareData);
-              const res=await axios.post('http://localhost:8080/expenseShare',expenseShareData);
+              const res=await axios.post(`${baseUrl}/expenseShare`,expenseShareData);
 
-              const res2=await axios.post(`http://localhost:8080/owes?id=${exp.expId}`);
-              const res3=await axios.post(`http://localhost:8080/pays?id=${exp.expId}`);
+              const res2=await axios.post(`${baseUrl}/owes?id=${exp.expId}`);
+              const res3=await axios.post(`${baseUrl}/pays?id=${exp.expId}`);
               const owe = Array.isArray(res2.data) ? res2.data : [res2.data];
               const pay = Array.isArray(res3.data) ? res3.data : [res3.data];
               const createdDate = new Date(exp.createdAt);
@@ -361,8 +364,11 @@ function People() {
                 owes: Array.isArray(owe) ? owe : [owe], 
                 pays: Array.isArray(pay) ? pay : [pay],
         };
-            setData((prevData) => [...prevData, updatedExpense]);
+         console.log(updatedExpense);
+             setData((prevData) => [...prevData, updatedExpense]);
+             console.log(data);
           }
+          
           else if(splitBy==="Unequally")
           {
                let sum=0;
@@ -409,10 +415,10 @@ function People() {
                 }));
                 console.log(expenseShareData);
                try{
-                const res=await axios.post('http://localhost:8080/expenseShare',expenseShareData);
+                const res=await axios.post(`${baseUrl}/expenseShare`,expenseShareData);
 
-                const res2=await axios.post(`http://localhost:8080/owes?id=${exp.expId}`);
-                const res3=await axios.post(`http://localhost:8080/pays?id=${exp.expId}`);
+                const res2=await axios.post(`${baseUrl}/owes?id=${exp.expId}`);
+                const res3=await axios.post(`${baseUrl}/pays?id=${exp.expId}`);
                 const owe = Array.isArray(res2.data) ? res2.data : [res2.data];
                 const pay = Array.isArray(res3.data) ? res3.data : [res3.data];
                 const createdDate = new Date(exp.createdAt);
@@ -478,10 +484,10 @@ function People() {
               }));
               console.log(expenseShareData);
              try{
-                   const res=await axios.post('http://localhost:8080/expenseShare',expenseShareData);
+                   const res=await axios.post(`${baseUrl}/expenseShare`,expenseShareData);
 
-                   const res2=await axios.post(`http://localhost:8080/owes?id=${exp.expId}`);
-                    const res3=await axios.post(`http://localhost:8080/pays?id=${exp.expId}`);
+                   const res2=await axios.post(`${baseUrl}/owes?id=${exp.expId}`);
+                    const res3=await axios.post(`${baseUrl}/pays?id=${exp.expId}`);
                     const owe = Array.isArray(res2.data) ? res2.data : [res2.data];
                     const pay = Array.isArray(res3.data) ? res3.data : [res3.data];
                     const createdDate = new Date(exp.createdAt);
@@ -516,7 +522,7 @@ function People() {
         setModels(false);
     }
     const handleReset= async()=>{
-      const res=await axios.post(`http://localhost:8080/id?groupId=${groupId}`);
+      const res=await axios.post(`${baseUrl}/id?groupId=${groupId}`);
        
         if((res.data)===0)
         {
@@ -534,8 +540,8 @@ function People() {
           try
           {
             console.log(expid);
-            const res=await axios.post(`http://localhost:8080/draftshare?id=${expid}`);
-            const res1=await axios.post(`http://localhost:8080/expenses?id=${expid}`);
+            const res=await axios.post(`${baseUrl}/draftshare?id=${expid}`);
+            const res1=await axios.post(`${baseUrl}/expenses?id=${expid}`);
            console.log(res.data);
            console.log(res1.data);
           setFetch({
@@ -557,7 +563,11 @@ function People() {
     const[response,setResponse]=useState([]);
 
     const handleSettle=async ()=>{
-           const res=await axios.post('http://localhost:8080/settledata');
+           
+            console.log(groupId);
+           const response=await axios.post(`${baseUrl}/getExpId?id=${groupId}`);
+           const id=response.data;
+           const res=await axios.post(`${baseUrl}/settledata?ids=${id.join(',')}`);
            const m1=res.data.m1;
            const m2=res.data.m2;
            setRes(res.data.m1);
@@ -577,7 +587,7 @@ function People() {
                   mm[1] = -money;
                   m[1] = 0;
                 } else {
-                  await axios.post(`http://localhost:8080/getName?name=${m[0]}`);
+                  await axios.post(`${baseUrl}/getName?name=${m[0]}`);
                   setRes((prev) => prev.filter((item) => item[0] !== m[0]));
                   setResponse((prev) => prev.filter((item) => item[0] !== mm[0]));
                 }
@@ -596,7 +606,7 @@ function People() {
          }
          return previtem;
       });
-      const res=await axios.post(`http://localhost:8080/getName?name=${name}`);
+      const res=await axios.post(`${baseUrl}/getName?name=${name}`);
     }
     const[b,setB]=useState([]);
     const handleResp=async(index,name)=>{
@@ -607,15 +617,16 @@ function People() {
         }
         return previtem;
      });
-     const res=await axios.post(`http://localhost:8080/resetdata?name=${name}`);
+     const res=await axios.post(`${baseUrl}/resetdata?name=${name}`);
     }
     const[total,setTotal]=useState(false);
     const[one,setOne]=useState();
     const[two,setTwo]=useState();
     const[three,setThree]=useState();
     const handleTotal=async()=>{
+      try{
         setTotal(true);
-         const res=await axios.post(`http://localhost:8080/spending?gId=${groupId}`);
+         const res=await axios.post(`${baseUrl}/spending?gId=${groupId}`);
          console.log(res.data.ids);
          console.log(res.data.obj);
          const ids=res.data.ids;
@@ -623,9 +634,49 @@ function People() {
          const obj=res.data.obj;
          setOne(obj[0]);
          setTwo(obj[1]);
-         const share=await axios.post(`http://localhost:8080/summary?ids=${id.join(',')}`);
+         const share=await axios.post(`${baseUrl}/summary?ids=${id.join(',')}`);
          setThree(share.data);
+      }
+      catch(error)
+      {
+         console.log(error);
+      }
     }
+
+    // const passid = "12345"; // Example unique identifier
+    const shareableLink = `${window.location.origin}/people/${groupId}`;
+
+    const copyToClipboard = () => {
+        navigator.clipboard.writeText(shareableLink);
+        alert("Link copied to clipboard!");
+    };
+
+    useEffect(() => {
+        // Initialize Bootstrap Tooltip
+        const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new window.bootstrap.Tooltip(tooltipTriggerEl);
+        });
+    }, []);
+    
+    const[balance,setBalance]=useState([]);
+    const handleBalance=async()=>{
+      setOverallbal(true);
+      try{
+           const response=await axios.post(`${baseUrl}/getExpId?id=${groupId}`);
+           const id=response.data;
+           const res=await axios.post(`${baseUrl}/getBalance?ids=${id.join(',')}`); 
+           setBalance(res.data);
+           console.log(res.data);
+
+      }
+      catch(err)
+      {
+         console.error(err);
+      }
+       
+    }
+    
   return (
     <>
        {/* <Header/> */}
@@ -661,7 +712,7 @@ function People() {
        <Button style={{backgroundColor:'white',width:'200px',height:'50px',color:'black',fontSize:'20px',borderColor:'grey',boxShadow:'10px 10px 18px black'}} onClick={handleSettle}>Settle up</Button>
        </Col>
          <Col>
-         <Button style={{backgroundColor:'white',width:'200px',height:'50px',color:'black',fontSize:'20px',borderColor:'grey',boxShadow:'10px 10px 18px black'}} >Balances</Button>
+         <Button style={{backgroundColor:'white',width:'200px',height:'50px',color:'black',fontSize:'20px',borderColor:'grey',boxShadow:'10px 10px 18px black'}} onClick={handleBalance}>Balances</Button>
          </Col>
          <Col>
          <Button style={{backgroundColor:'white',width:'200px',height:'50px',color:'black',fontSize:'20px',borderColor:'grey',boxShadow:'10px 10px 18px black'}} onClick={handleTotal}>Totals</Button>
@@ -688,11 +739,15 @@ function People() {
        <GroupAddIcon style={{fontSize:'45px',color:'#3CB371',paddingTop:'10px'}}></GroupAddIcon>
        </div>
        <h3 onClick={handleshow} style={{color:'#3CB371',marginTop:'-50px',marginLeft:'100px',cursor:'pointer'}}>Add group members</h3>
-       <div style={{height:'60px',width:'70px',backgroundColor:'#B9F6CA',borderRadius:'48%',marginLeft:'500px',marginTop:'50px'}}>
-       <LinkIcon style={{fontSize:'45px',color:'#3CB371',paddingTop:'10px'}}/>
+       </div>}
+          
+       <div style={{height:'60px',width:'70px',backgroundColor:'#B9F6CA',borderRadius:'48%',marginLeft:'500px',marginTop:'50px'}} >
+       <LinkIcon style={{fontSize:'45px',color:'#3CB371',paddingTop:'10px'}} data-bs-toggle="tooltip"
+                data-bs-placement="top"
+                title="Copy Link" onClick={copyToClipboard} />
        </div>
        <h3 style={{color:'#3CB371',marginTop:'-50px',marginBottom:'50px',marginLeft:'40px'}}>Share group link</h3>
-       </div>}
+       
        <div style={{ display: 'flex', alignItems: 'center',borderRadius:'50px',backgroundColor:'#3CB371',width:'200px' ,marginLeft:'1100px',marginBottom:'50px',marginTop:'40px'}}>
         <EditNoteIcon style={{color:'white',paddingLeft:'20px',fontSize:'50px'}}/>
         <h5 style={{color:'white',marginLeft:'10px'}} onClick={handleExpenses}>Add Expense</h5>
@@ -740,16 +795,16 @@ function People() {
                   <option>Choose</option>
                   <option>equally</option>
                   <option>Unequally</option>
-                  <option>Percentage</option>
+                  {/* <option>Percentage</option> */}
                 </select>
             </div>
            {(splitby==="Unequally" || splitby==="Percentage") && <div>
               {users.map((user,index)=>(
                 <>
                   <div style={{display:'flex',marginTop:'20px'}}>
-                 <p style={{marginLeft:'130px'}}>{user}</p>
-                 <CurrencyRupeeIcon style={{marginLeft:'100px'}}/>
-                 <input type="text" style={{width:'100px'}}  onChange={(e) => handleExpenseInput(e,index)}></input>
+                 <p style={{marginLeft:'100px'}}>{user}</p>
+                 <CurrencyRupeeIcon style={{position:'absolute',marginLeft:'280px'}}/>
+                 <input type="text" style={{width:'100px',position:'absolute',marginLeft:'300px'}}  onChange={(e) => handleExpenseInput(e,index)}></input>
                  </div>
                  </>
               ))}
@@ -758,13 +813,12 @@ function People() {
             </div>
         </Modal.Body>
         <Modal.Footer>
-        <Link to="/people">
           <Button variant="secondary" onClick={handleClose} >
             Close
-          </Button></Link>
-          <Link to="/people" state={{ groupName: name, groupImg: img, id: groupId}}><Button variant="primary" onClick={handleexpenseShare}>
+          </Button>
+          <Button variant="primary" onClick={handleexpenseShare}>
             Add Expense
-          </Button></Link>
+          </Button>
         </Modal.Footer>
       </Modal>
       <Footer/>
@@ -775,17 +829,27 @@ function People() {
         </Modal.Header>
         <Modal.Body>
           <div>
-                 <p>Expense Description:{fetch.description}</p>
-                 <p>Paid By:{fetch.paidBy}</p>
-                 <p>Split By:{fetch.splitBy}</p>
-                 <p>Members Name and Their Contribution:</p>
-
+                 <p><span style={{fontWeight:'bold'}}>Expense Description:</span>{fetch.description}</p>
+                 <p><span style={{fontWeight:'bold'}}> Paid By:</span>{fetch.paidBy}</p>
+                 <p><span style={{fontWeight:'bold'}}>Split By:</span>{fetch.splitBy}</p>
+                 <p style={{fontWeight:'bold'}}>Members Name and Their Contribution:</p>
+                 <Row style={{fontWeight:'bold'}}>
+                  <Col>Member Name</Col>
+                  <Col>Owed Amount</Col>
+                  <Col>Paid Amount</Col>
+                 </Row>
+                 
                  {flow.map((d, index) => (
                   <p key={index}>
-                    {d.memberName}: Owed {d.owed} Paid {d.paid}
+                     <Row>
+                     <Col sm={4}>{d.memberName}</Col>
+                     <Col sm={4}>{d.owed}</Col>
+                     <Col>{d.paid}</Col>
+                    {/* {d.memberName}: Owed {d.owed} Paid {d.paid} */}
+                    </Row>
                   </p>
                 ))}
-                 
+                
             </div>
         </Modal.Body>
         <Modal.Footer>
@@ -862,6 +926,39 @@ function People() {
           <Link to="/people" state={{ groupName: name, groupImg: img, id: groupId}}><Button variant="secondary" onClick={handleClose}>
             Close
           </Button></Link>
+        </Modal.Footer>
+      </Modal> 
+
+      <Modal show={overallbal} onHide={handleClose} centered>
+        <Modal.Header closeButton>
+          <Modal.Title>Group Balance</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+                <table>
+                  <tr>
+                    <th>Member Name</th>
+                    <th>Owed</th>
+                    <th>Paid</th>
+                    <th>Net balance</th>
+                  </tr>
+                  
+                {balance.map((bal,index)=>(
+                    <tr>
+                    <td>${bal[0]}</td>
+                    <td>${bal[1]}</td>
+                    <td>${bal[2]}</td>
+                    {bal[3]<0?<td>Owes ${-bal[3]}</td>:
+                    <td>Owed ${bal[3]}</td>}
+                 </tr>
+                ))
+                }
+               
+                </table>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleClose}>
+            Close
+          </Button>
         </Modal.Footer>
       </Modal> 
     </> 

@@ -20,6 +20,7 @@ function App() {
           <Route path='/search' to element={<Search/>}></Route>
           <Route path='/people' to element={<People/>}></Route>
           <Route path='/account' to element={<Account/>}></Route>
+          <Route path='/people/:groupId' to element={<People/>}></Route>
          </Routes>
          {/*  <Footer/> */}
         </BrowserRouter>

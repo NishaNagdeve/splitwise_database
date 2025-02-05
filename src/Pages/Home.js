@@ -1,10 +1,10 @@
 import React, { useState,useRef} from 'react';
-import { Link} from 'react-router-dom';
+import { Link, useLocation} from 'react-router-dom';
 import TuneIcon from '@mui/icons-material/Tune';
 import EditNoteIcon from '@mui/icons-material/EditNote';
 import GroupAddIcon from '@mui/icons-material/GroupAdd';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { Modal,Button} from 'react-bootstrap';
+import { Modal,Button,Offcanvas,Row,Col} from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';  
 import 'bootstrap/dist/js/bootstrap.bundle.min';
 import AddAPhotoOutlinedIcon from '@mui/icons-material/AddAPhotoOutlined';
@@ -14,21 +14,28 @@ import Footer from '../Components/Footer';
 import axios from 'axios';
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import frnd1 from '../Images/frnd1.jpg';
+import frnd2 from '../Images/frnd2.jpg';
+import frnd3 from '../Images/frnd3.jpg';
+import frnd4 from '../Images/frnd4.jpg';
 
 export default function Home() {
 
   const[showModal,setShowModal]=useState(false);
   const[group,setGroup]=useState([]);
-  const handleClose=()=>setShowModal(false);
+  const[canvas,setCanvas]=useState(false);
+  const handleClose=()=>{setShowModal(false);setCanvas(false)};
   const [selectedImage, setSelectedImage] = useState(checkimg);
   const fileInputRef = useRef(null); 
   const n1="Group Expense";
   const [name,setName]=useState(n1);
   const[modalName,setModalName]=useState(name);
   const[modalImage,setModalImage]=useState(selectedImage);
- 
+  const[frnds,setFrnds]=useState('');
 
-
+   const images=[frnd1,frnd2,frnd3,frnd4];
+  
+   const baseUrl="https://splitwise-database.onrender.com";
   useEffect(() => {
         const data=JSON.parse(localStorage.getItem("data"));
         if (data) {
@@ -78,7 +85,7 @@ export default function Home() {
     formData.append('username', email);
     console.log(email);
     try{
-       const response=await axios.post('http://localhost:8080/groupdata', formData, {
+       const response=await axios.post(`${baseUrl}/groupdata`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
@@ -91,7 +98,7 @@ export default function Home() {
         alert("An error occurred: " + error.message);
       }   
       try{
-        const response=await axios.post('http://localhost:8080/data',email,{
+        const response=await axios.post(`${baseUrl}/data`,email,{
          headers: {
            'Content-Type': 'text/plain'
          }
@@ -111,7 +118,7 @@ export default function Home() {
   const handleDelete=async(id)=>
   {  
     try{
-      const response=await axios.post('http://localhost:8080/data',email,{
+      const response=await axios.post(`${baseUrl}/data`,email,{
        headers: {
          'Content-Type': 'text/plain'
        }
@@ -129,7 +136,7 @@ export default function Home() {
      console.log(id);
      const i=id;
      try{
-          const res=await axios.delete('http://localhost:8080/delete',{
+          const res=await axios.delete(`${baseUrl}/delete`,{
              params:{
                i
              }
@@ -148,16 +155,16 @@ export default function Home() {
 
   const handleMember = async (id, gName,img) => { 
     try {
-      const res=await axios.post(`http://localhost:8080/expensedata?id=${id}`);
+      const res=await axios.post(`${baseUrl}/expensedata?id=${id}`);
       // const{expId,amount,paidBy,splitBy,description,createdAt}=res.data;
       console.log(res.data);
       const expense=res.data;
       const exp=expense.map(expense=>expense.expId);
       console.log(exp);
       
-      const res2=await axios.post(`http://localhost:8080/sharedata?id=${exp.join(',')}`);
-      const res3=await axios.post(`http://localhost:8080/shares?id=${exp.join(',')}`);
-      const res1 = await axios.post(`http://localhost:8080/id?groupId=${id}`); 
+      const res2=await axios.post(`${baseUrl}/sharedata?id=${exp.join(',')}`);
+      const res3=await axios.post(`${baseUrl}/shares?id=${exp.join(',')}`);
+      const res1 = await axios.post(`${baseUrl}/id?groupId=${id}`); 
       const share=res2.data;
       const shares=res3.data;
       console.log(share);
@@ -197,7 +204,27 @@ export default function Home() {
     }
     
   };
+  const location=useLocation();
+  const[frndsdata,setFrndsData]=useState('');
+  console.log(location.state?.frnds);
+  useEffect(() => {
+    if (location.state?.on === 1 &&  !canvas) {
+      setCanvas(true);
+      
+      const updatedData = (location.state?.frnds).map((frnd, index) => ({
+        name: frnd,
+        image: images[index % images.length],
+      }));
+      setFrndsData(updatedData);
+      console.log(updatedData.name);
+      console.log(updatedData);
+    }
+  }, [location.state, images]);
   
+  const handleCanvas=()=>{ setCanvas(false);
+    console.log("Canvas state:", canvas);
+    navigate("/home", { state: { ...location.state, on: 0 } });
+  };
   
   return (
     <>
@@ -210,8 +237,8 @@ export default function Home() {
           {group.map((groups,index)=>(
              <div key={index} style={{marginTop:'20px'}}>
              <img src={groups.img?`data:image/jpeg;base64,${groups.img}`:modalImage} alt="Selected" style={{ width: '200px', height: '200px', objectFit: 'cover',marginLeft:'-1000px',marginTop:'40px',borderRadius:"10px"}} onClick={() => handleMember(groups.id, groups.gName, groups.img)} />
-             <h3 style={{marginTop:'-100px',marginLeft:'-400px',color:'black'}}>{groups.gName || modalName|| n1}</h3>
-             <h4 style={{marginLeft:'-450px',color:'gray'}}>no expenses</h4>
+             <h3 style={{marginTop:'-100px',color:'black',position:'absolute',marginLeft:'380px'}}>{groups.gName || modalName|| n1}</h3>
+             <h4 style={{marginLeft:'-485px',color:'gray',marginTop:'-50px'}}>expenses</h4>
              <DeleteIcon onClick={()=>handleDelete(groups.id)}  style={{fontSize:'40px',marginLeft:'1250px',marginTop:'-100px',color:'red',cursor:'pointer'}} ></DeleteIcon>
              </div>
           ))}
@@ -220,7 +247,7 @@ export default function Home() {
   <GroupAddIcon style={{color:'#3CB371',paddingLeft:'20px',fontSize:'50px'}}/>
   <a href="#" onClick={handleshow} style={{textDecoration:'none'}}><h5 style={{color:'#3CB371',marginLeft:'20px'}}>Start a new group</h5></a>
 </div>
- 
+
 <div  style={{ display: 'flex', alignItems: 'center',borderRadius:'50px',backgroundColor:'#3CB371',width:'200px' ,marginLeft:'1100px',marginTop:'100px'}}>
   <EditNoteIcon style={{color:'white',paddingLeft:'20px',fontSize:'50px'}}/>
   <h5 style={{color:'white',marginLeft:'10px'}}>Add Expense</h5>
@@ -259,6 +286,34 @@ export default function Home() {
         </Modal.Footer>
       </Modal>
       <Footer/>
+
+      <Offcanvas show={canvas} onHide={handleCanvas} style={{backgroundColor:'#66CDAA',color:'white'}}>
+        <Offcanvas.Header closeButton>
+          <Offcanvas.Title>FRIENDS</Offcanvas.Title>
+        </Offcanvas.Header>
+        <Offcanvas.Body>
+        <Row>
+      {Array.isArray(frndsdata) && frndsdata.length > 0 ? (
+        frndsdata.map((data, index) => (
+          <React.Fragment key={index}>
+            <Col sm={6} style={{marginTop:'4px'}}>
+              <img
+                src={data.image}
+                style={{ width: '50px', height: '40px', borderRadius: '15px' }}
+                alt="Friend"
+              />
+            </Col>
+            <Col style={{marginTop:'4px'}}>
+              <p style={{fontWeight:'bold',textTransform:'uppercase'}}>{data.name}</p>
+            </Col>
+          </React.Fragment>
+        ))
+      ) : (
+        <p>No friends available</p>
+      )}
+    </Row>
+        </Offcanvas.Body>
+      </Offcanvas>
     </>
   )
 }

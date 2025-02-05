@@ -9,6 +9,7 @@ import { useNavigate } from 'react-router-dom';
 
 export default function Account() {
     
+  const baseUrl="https://splitwise-database.onrender.com";
   const navigate=useNavigate();
   const[color,setColor]=useState('#66CDAA');
   const[colors,setColors]=useState('white');
@@ -52,7 +53,7 @@ export default function Account() {
     }
 
     try {
-      const response = await axios.post('http://localhost:8080/register', {
+      const response = await axios.post(`${baseUrl}/register`, {
         name, 
         email, 
         password
@@ -71,7 +72,7 @@ export default function Account() {
   const handleSubmit= async ()=>{
        const {title,pass}= loginData;
        try{
-        const res= await axios.post('http://localhost:8080/login',{
+        const res= await axios.post(`${baseUrl}/login`,{
            email:title,
            password:pass
         });
@@ -80,7 +81,7 @@ export default function Account() {
         {
             console.log(title);
             try{
-                     const response=await axios.post('http://localhost:8080/data',title,{
+                     const response=await axios.post(`${baseUrl}/data`,title,{
                       headers: {
                         'Content-Type': 'text/plain'
                       }
