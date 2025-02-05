@@ -7,7 +7,7 @@ public class CorsDev implements WebMvcConfigurer {
 
 	public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOrigins("http://localhost:3000")
+//                .allowedOrigins("http://localhost:3000")
                 .allowedOrigins("https://splitwise-base.onrender.com")     
                 .allowedMethods("GET", "POST", "PUT", "DELETE","OPTIONS")
                 .allowedHeaders("*")
