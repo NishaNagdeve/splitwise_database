@@ -8,6 +8,7 @@ import { Modal,Button} from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';  
 import AddAPhotoOutlinedIcon from '@mui/icons-material/AddAPhotoOutlined';
 import checkimg from '../Images/study.jpg';
+import LogoutIcon from '@mui/icons-material/Logout';
 import { useNavigate } from 'react-router-dom';
 
 function Header({addGroup}){
@@ -59,18 +60,18 @@ function Header({addGroup}){
         <Navbar className='navbar' expand="sm" style={{ backgroundColor: 'white', borderBottom: "2px solid #333" }}>
       <Container style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
 
-        <Navbar.Brand as={Link} to="/" style={{ display: 'flex', alignItems: 'center' }}>
+        <Navbar.Brand as={Link} to="/home" style={{ display: 'flex', alignItems: 'center' }}>
           <img src={split} height={80} width={120} style={{ marginTop: '10px', display: 'inline-block',marginLeft:'-80px' }} alt="Splitwise logo" />
         </Navbar.Brand>
         
         
         <Nav className='ml-auto' style={{ display: 'flex', alignItems: 'center' }}>
-          <Nav.Link as={Link} to="/search">
-            <SearchIcon style={{ fontSize: '40px', marginRight: '40px',color:'#66CDAA' }} />
-          </Nav.Link>
           <Nav.Link as={Link} to="#" onClick={handleshow} style={{textDecoration:'none'}}>
-            <PeopleOutlineIcon style={{ fontSize: '40px',marginRight:'-50px' ,color:'#66CDAA'}} />
+            <PeopleOutlineIcon style={{ fontSize: '50px',marginRight:'40px' ,color:'#66CDAA'}} />
            </Nav.Link>
+           <Nav.Link as={Link} to="/">
+            <LogoutIcon style={{ fontSize: '40px', marginRight: '-50px',color:'#66CDAA' }} />
+          </Nav.Link>
         </Nav>
       </Container>
     </Navbar>

@@ -80,6 +80,7 @@ export default function Account() {
         if(res.data=="Login successful")
         {
             console.log(title);
+            localStorage.setItem("email",title);
             try{
                      const response=await axios.post(`${baseUrl}/data`,title,{
                       headers: {
@@ -131,7 +132,7 @@ export default function Account() {
         <input type='email' placeholder="Email" name="email" value={registerData.email} style={{width:'250px',borderRadius:'25px'}} onChange={handleInput} required/><br></br><br></br>
         <input type='password' placeholder="Password" name="password" value={registerData.password} style={{width:'250px',borderRadius:'25px'}} onChange={handleInput} required/><br></br><br></br>
         <input type='password' placeholder="Confirm Password" name="confirmPassword" value={registerData.confirmPassword} style={{width:'250px',borderRadius:'25px'}} onChange={handleInput} required/><br></br><br></br>
-        <Button onClick={handleForm} style={{width:'250px',borderRadius:'25px',backgroundColor:'#66CDAA',borderColor:'#66CDAA'}}>Login</Button><br></br>
+        <Button onClick={handleForm} style={{width:'250px',borderRadius:'25px',backgroundColor:'#66CDAA',borderColor:'#66CDAA'}}>Register</Button><br></br>
       </>
       )}
       </div>

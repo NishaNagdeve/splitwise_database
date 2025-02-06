@@ -14,9 +14,9 @@ export default function Footer() {
  
    const navigate=useNavigate();
   const[on,setOn]=useState(0);
+  const baseUrl="https://splitwise-database.onrender.com";
+  
   const handleCanvas=async()=>{ 
-    
-    const baseUrl="https://splitwise-database.onrender.com";
     const res=await axios.post(`${baseUrl}/getFriends`);
     console.log(res.data);
     setOn(1);
@@ -24,12 +24,28 @@ export default function Footer() {
       state:{on:on , frnds:res.data}
      })
   }  
+const groupSet=async()=>{
+  const title=localStorage.getItem("email");
+  try{
+    const response=await axios.post(`${baseUrl}/data`,title,{
+     headers: {
+       'Content-Type': 'text/plain'
+     }
+    });
+        localStorage.setItem("data",JSON.stringify(response.data));
+        navigate('/home');
+}
+catch(error)
+{
+console.log(error);
+}
+}
   return (
     <>
     <hr/>
     <div>
     <Container className="d-flex align-items-center" style={{ width: '100%'}}>
-          <Link to="/home"><PeopleOutlineIcon style={{ fontSize: '40px', marginLeft: '80px', marginRight: '310px' ,color:'#66CDAA'}} className='icon1'></PeopleOutlineIcon></Link>
+          <PeopleOutlineIcon style={{ fontSize: '40px', marginLeft: '80px', marginRight: '310px' ,color:'#66CDAA'}} onClick={groupSet} className='icon1'></PeopleOutlineIcon>
           <PermIdentityIcon style={{ fontSize: '40px', marginRight: '250px' ,color:'#66CDAA'}} onClick={handleCanvas} className="icon2" />
           <BrokenImageIcon style={{ fontSize: '40px', marginRight: '260px',color:'#66CDAA' }} className="icon3"/>
           <Link to="/account"><InsertEmoticonIcon style={{ fontSize: '40px' ,color:'#66CDAA'}} className="icon4" /></Link>
